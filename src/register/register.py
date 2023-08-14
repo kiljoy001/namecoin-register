@@ -1,22 +1,70 @@
 import subprocess
+from src.namecoin_command import execute_namecoin_command
 
 COMMANDS = {
-    "generate_ca_key": ("openssl", "genpkey", "-algorithm", "RSA", "-out", "ca_private_key.pem"),
-    "generate_ca_cert": ("openssl", "req", "-new", "-x509", "-key", "ca_private_key.pem", "-out",
-                         "ca_certificate.pem", "-days", "365"),
-    "generate_key": ("openssl", "genpkey", "-algorithm", "RSA", "-out", "{cert_name}_private_key.pem"),
-    "generate_cert": ("openssl", "req", "-new", "-key", "{cert_name}_private_key.pem", "-out", "{cert_name}.csr"),
-    "sign_cert": ("openssl", "x509", "-req", "-in", "{cert_name}.csr", "-CA", "ca_certificate.pem",
-                  "-CAkey", "ca_private_key.pem", "-CAcreateserial", "-out", "{cert_name}_certificate.pem",
-                  "-days", "365")
+    "generate_ca_key": (
+        "openssl",
+        "genpkey",
+        "-algorithm",
+        "RSA",
+        "-out",
+        "ca_private_key.pem",
+    ),
+    "generate_ca_cert": (
+        "openssl",
+        "req",
+        "-new",
+        "-x509",
+        "-key",
+        "ca_private_key.pem",
+        "-out",
+        "ca_certificate.pem",
+        "-days",
+        "365",
+    ),
+    "generate_key": (
+        "openssl",
+        "genpkey",
+        "-algorithm",
+        "RSA",
+        "-out",
+        "{cert_name}_private_key.pem",
+    ),
+    "generate_cert": (
+        "openssl",
+        "req",
+        "-new",
+        "-key",
+        "{cert_name}_private_key.pem",
+        "-out",
+        "{cert_name}.csr",
+    ),
+    "sign_cert": (
+        "openssl",
+        "x509",
+        "-req",
+        "-in",
+        "{cert_name}.csr",
+        "-CA",
+        "ca_certificate.pem",
+        "-CAkey",
+        "ca_private_key.pem",
+        "-CAcreateserial",
+        "-out",
+        "{cert_name}_certificate.pem",
+        "-days",
+        "365",
+    ),
 }
 
 
 def run_command(command_type, cert_name=None):
     if command_type not in COMMANDS:
         raise ValueError("Invalid command type")
-    command = tuple(arg.replace("{cert_name}", cert_name) if
-                    "{cert_name}" in arg else arg for arg in COMMANDS[command_type])
+    command = tuple(
+        arg.replace("{cert_name}", cert_name) if "{cert_name}" in arg else arg
+        for arg in COMMANDS[command_type]
+    )
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
@@ -34,3 +82,6 @@ def generate_ca():
     run_command("generate_ca_key")
     run_command("generate_ca_cert")
 
+
+def register_new_domain(domain_name):
+    pass
