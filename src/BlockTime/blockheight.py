@@ -1,5 +1,4 @@
 import asyncio
-
 from src.namecoin_command import execute_namecoin_command
 
 

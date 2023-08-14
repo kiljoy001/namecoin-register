@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from src.namecoin_command import execute_namecoin_command
-from src.BlockTime.Blockheight import get_blockheight
+from src.BlockTime.blockheight import get_blockheight
 
 app = FastAPI()
 
