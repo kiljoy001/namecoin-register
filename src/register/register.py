@@ -1,5 +1,8 @@
 import subprocess
+import json
 from frozendict import frozendict
+
+from src.BlockTime.blockheight import wait_for_blocks
 from src.namecoin_command import execute_namecoin_command
 
 COMMANDS = frozendict(
@@ -101,9 +104,20 @@ def is_valid_certificate(cert_path):
         return False
 
 
-def register_new_domain(domain_name):
+async def name_firstupdate(name: str, rand: str, txid: str, value: str):
+    response = execute_namecoin_command("name_firstupdate", name, rand, txid, value)
+    return {"response": response}
+
+
+async def register_new_domain(domain_name, on_chain_value):
     # check balance
-    min_balance = 0.015
+    min_balance = 0.02
     balance = execute_namecoin_command("getbalance")
     if balance[balance] > min_balance:
         response = execute_namecoin_command("namenew")
+        clean_response = json.loads(response["response"])
+        txid = clean_response[0]
+        rand_hex = clean_response[1]
+        second_response = await wait_for_blocks(12, name_firstupdate, domain_name, rand_hex, txid, on_chain_value)
+        return second_response
+

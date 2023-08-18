@@ -7,9 +7,9 @@ def get_blockheight():
     return {"blockheight": blockheight}
 
 
-async def wait_for_blocks(blocks_to_wait, func_to_call):
+async def wait_for_blocks(blocks_to_wait, func_to_call, *args, **kwargs):
     current_height_query = get_blockheight()
     target_block = blocks_to_wait + current_height_query["blockheight"]
     while get_blockheight() < target_block:
         await asyncio.sleep(60)
-    await func_to_call()
+    await func_to_call(*args, **kwargs)

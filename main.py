@@ -11,10 +11,7 @@ async def name_new(name: str):
     return {"response": response}
 
 
-@app.post("/name_firstupdate/")
-async def name_firstupdate(name: str, rand: str, txid: str, value: str):
-    response = execute_namecoin_command("name_firstupdate", name, rand, txid, value)
-    return {"response": response}
+
 
 
 # wallet endpoints - will need security no endpoints for sending funds, only address generation for receiving
