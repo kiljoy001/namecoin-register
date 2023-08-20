@@ -1,7 +1,6 @@
 import subprocess
 import json
 from frozendict import frozendict
-
 from src.BlockTime.blockheight import wait_for_blocks
 from src.namecoin_command import execute_namecoin_command
 
