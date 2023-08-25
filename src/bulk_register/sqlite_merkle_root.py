@@ -1,4 +1,4 @@
-import sqlite3
+import aiosqlite
 import hashlib
 import base64
 from pymerkle import InmemoryTree
@@ -51,10 +51,16 @@ async def store_tree_to_table(db_location, tree, table_name):
 
 @contextmanager
 async def get_db_cursor(db_location):
-    connection = sqlite3.connect(db_location)
+    """Abstracts the database creation, connection and cleanup"""
+    connection = aiosqlite.connect(db_location)
     db_cursor = connection.cursor()
     try:
         yield db_cursor
     finally:
-        connection.commit()
-        connection.close()
+        await connection.commit()
+        await connection.close()
+
+
+async def check_full_tree(merkle_root, db_location):
+    db_root, _, _ = await calculate_merkle_roots(db_location)
+    return db_root["row_root"] == merkle_root
